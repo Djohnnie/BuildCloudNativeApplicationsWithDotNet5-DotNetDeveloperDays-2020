@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csharpwars-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: csharpwars-api
+  template:
+    metadata:
+      labels:
+        app: csharpwars-api
+    spec:
+      containers:
+      - name: csharpwars-api
+        image: csharpwars.azurecr.io/csharpwars-api:latest
+        env:
+          - name: CONNECTION_STRING
+            value: ""
+          - name: ARENA_SIZE
+            value: "10"
+          - name: VALIDATION_HOST
+            value: ""
+          - name: BOT_DEPLOYMENT_LIMIT
+            value: "1"
+          - name: CERTIFICATE_FILENAME
+            value: ""
+          - name: CERTIFICATE_PASSWORD
+            value: ""
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000

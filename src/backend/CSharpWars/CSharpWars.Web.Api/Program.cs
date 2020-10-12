@@ -21,8 +21,15 @@ namespace CSharpWars.Web.Api
                     webBuilder.UseKestrel();
                     webBuilder.ConfigureKestrel((context, options) =>
                     {
-                        options.Listen(IPAddress.Any, 5000,
-                            listenOptions => { listenOptions.UseHttps(certificateFileName, certificatePassword); });
+                        if (string.IsNullOrEmpty(certificateFileName))
+                        {
+                            options.Listen(IPAddress.Any, 5000);
+                        }
+                        else
+                        {
+                            options.Listen(IPAddress.Any, 5000,
+                                listenOptions => { listenOptions.UseHttps(certificateFileName, certificatePassword); });
+                        }
                     });
                     webBuilder.UseStartup<Startup>();
                 });

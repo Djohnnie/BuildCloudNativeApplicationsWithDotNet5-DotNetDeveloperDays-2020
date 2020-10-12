@@ -4,7 +4,7 @@
 WORKDIR /app
 
 # Copy the app
-COPY bin/Release/publish /app
+COPY bin/Release/net5.0/publish /app
 
 EXPOSE 5000
 
