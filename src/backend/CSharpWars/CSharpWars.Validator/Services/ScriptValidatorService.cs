@@ -20,6 +20,7 @@ namespace CSharpWars.Validator.Services
 
         public override Task<ScriptValidationResponse> Validate(ScriptValidationRequest request, ServerCallContext context)
         {
+            _logger.LogInformation("Validator in action!");
             return _scriptValidationHelper.Validate(request);
         }
     }

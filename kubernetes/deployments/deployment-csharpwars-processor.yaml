@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: csharpwars-api
+  name: csharpwars-processor
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: csharpwars-api
+      app: csharpwars-processor
   template:
     metadata:
       labels:
-        app: csharpwars-api
+        app: csharpwars-processor
     spec:
       containers:
-      - name: csharpwars-api
-        image: csharpwars.azurecr.io/csharpwars-api:latest
+      - name: csharpwars-processor
+        image: csharpwars.azurecr.io/csharpwars-processor:latest
         env:
           - name: KEY_VAULT
             value: "https://akv-csharpwars.vault.azure.net/"
@@ -30,17 +30,9 @@ spec:
                 key: client-secret
           - name: ARENA_SIZE
             value: "10"
-          - name: VALIDATION_HOST
-            value: ""
-          - name: BOT_DEPLOYMENT_LIMIT
-            value: "1"
-          - name: CERTIFICATE_FILENAME
-            value: ""
-          - name: CERTIFICATE_PASSWORD
-            value: ""
+          - name: ELASTIC_HOST
+            value: "http://unknown"
         resources:
           limits:
-            memory: "128Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 5000
+            memory: "512Mi"
+            cpu: "1000m"

@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using CSharpWars.Common.Configuration.Interfaces;
 using CSharpWars.DtoModel;
 using CSharpWars.Validator;
 using CSharpWars.Web.Helpers.Interfaces;
 using Grpc.Net.Client;
+using Microsoft.Extensions.Logging;
 using ScriptValidationMessage = CSharpWars.DtoModel.ScriptValidationMessage;
 
 namespace CSharpWars.Web.Helpers
@@ -13,11 +16,14 @@ namespace CSharpWars.Web.Helpers
     public class ScriptValidationHelper : IScriptValidationHelper
     {
         private readonly IConfigurationHelper _configurationHelper;
+        private readonly ILogger<ScriptValidationHelper> _logger;
 
         public ScriptValidationHelper(
-            IConfigurationHelper configurationHelper)
+            IConfigurationHelper configurationHelper,
+            ILogger<ScriptValidationHelper> logger)
         {
             _configurationHelper = configurationHelper;
+            _logger = logger;
         }
 
         public async Task<ValidatedScriptDto> Validate(ScriptToValidateDto script)
@@ -26,6 +32,7 @@ namespace CSharpWars.Web.Helpers
             {
                 var request = new ScriptValidationRequest { Script = script.Script };
 
+                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                 var validationHost = _configurationHelper.ValidationHost;
                 var channel = GrpcChannel.ForAddress(validationHost);
                 var client = new ScriptValidator.ScriptValidatorClient(channel);
@@ -44,8 +51,9 @@ namespace CSharpWars.Web.Helpers
                     }))
                 };
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, $"ValidationHost: {_configurationHelper.ValidationHost}, Exception: {ex.Message}");
                 return null;
             }
         }

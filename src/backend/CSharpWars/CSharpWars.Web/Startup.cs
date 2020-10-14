@@ -13,19 +13,19 @@ namespace CSharpWars.Web
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigurationHelper(c =>
             {
-                c.ConnectionString = GetEnvironmentVariable("CONNECTION_STRING");
+                c.ConnectionString = _configuration.GetValue<string>("CONNECTIONSTRING");
                 c.ArenaSize = ToInt32(GetEnvironmentVariable("ARENA_SIZE"));
                 c.ValidationHost = GetEnvironmentVariable("VALIDATION_HOST");
                 c.PointsLimit = ToInt32(GetEnvironmentVariable("POINTS_LIMIT"));
@@ -43,6 +43,7 @@ namespace CSharpWars.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UsePathBase("/web");
             app.UseStaticFiles();
             app.UseSession();
             app.UseRouting();

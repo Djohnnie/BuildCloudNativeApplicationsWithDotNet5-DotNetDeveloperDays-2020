@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: csharpwars-api
+  name: csharpwars-web
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: csharpwars-api
+      app: csharpwars-web
   template:
     metadata:
       labels:
-        app: csharpwars-api
+        app: csharpwars-web
     spec:
       containers:
-      - name: csharpwars-api
-        image: csharpwars.azurecr.io/csharpwars-api:latest
+      - name: csharpwars-web
+        image: csharpwars.azurecr.io/csharpwars-web:latest
         env:
           - name: KEY_VAULT
             value: "https://akv-csharpwars.vault.azure.net/"
@@ -31,13 +31,19 @@ spec:
           - name: ARENA_SIZE
             value: "10"
           - name: VALIDATION_HOST
-            value: ""
+            value: "http://csharpwars-validator:5050/status"
           - name: BOT_DEPLOYMENT_LIMIT
             value: "1"
-          - name: CERTIFICATE_FILENAME
-            value: ""
-          - name: CERTIFICATE_PASSWORD
-            value: ""
+          - name: POINTS_LIMIT
+            value: "200"
+          - name: ARENA_URL
+            value: "https://localhost"
+          - name: SCRIPT_TEMPLATE_URL
+            value: "https://localhost"
+          - name: ENABLE_CUSTOM_PLAY
+            value: "True"
+          - name: ENABLE_TEMPLATE_PLAY
+            value: "True"
         resources:
           limits:
             memory: "128Mi"

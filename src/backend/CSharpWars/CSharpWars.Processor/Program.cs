@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
+using static System.Environment;
 
 namespace CSharpWars.Processor
 {
@@ -20,15 +21,19 @@ namespace CSharpWars.Processor
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostContext, configBuilder) =>
+                .ConfigureAppConfiguration((hostContext, configurationBuilder) =>
                 {
-                    configBuilder.AddEnvironmentVariables();
+                    var keyVault = GetEnvironmentVariable("KEY_VAULT");
+                    var clientId = GetEnvironmentVariable("CLIENT_ID");
+                    var clientSecret = GetEnvironmentVariable("CLIENT_SECRET");
+                    configurationBuilder.AddAzureKeyVault(keyVault, clientId, clientSecret);
+                    configurationBuilder.AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.ConfigurationHelper(c =>
                     {
-                        c.ConnectionString = hostContext.Configuration.GetValue<string>("CONNECTION_STRING");
+                        c.ConnectionString = hostContext.Configuration.GetValue<string>("CONNECTIONSTRING");
                         c.ArenaSize = hostContext.Configuration.GetValue<int>("ARENA_SIZE");
                     });
                     services.ConfigureScriptProcessor();

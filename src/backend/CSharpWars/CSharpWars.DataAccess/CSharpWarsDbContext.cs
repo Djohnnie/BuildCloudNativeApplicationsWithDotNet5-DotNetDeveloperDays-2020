@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using CSharpWars.Common.Configuration.Interfaces;
 using CSharpWars.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CSharpWars.DataAccess
 {

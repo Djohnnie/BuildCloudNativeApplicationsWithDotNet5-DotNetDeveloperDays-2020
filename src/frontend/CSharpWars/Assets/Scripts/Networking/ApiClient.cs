@@ -14,7 +14,8 @@ namespace Assets.Scripts.Networking
 
     public class ApiClient : IApiClient
     {
-        private readonly string _baseUrl = "https://api.djohnnie.be:8801/api";
+        //private readonly string _baseUrl = "https://api.djohnnie.be:8801/api";
+        private readonly string _baseUrl = "http://csharpwars.westeurope.cloudapp.azure.com/api";
 
         public Task<Arena> GetArena()
         {

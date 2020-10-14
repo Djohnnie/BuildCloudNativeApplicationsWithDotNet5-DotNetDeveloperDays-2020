@@ -1,8 +1,8 @@
-using System;
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using static System.Environment;
 
 namespace CSharpWars.Web
 {
@@ -10,15 +10,17 @@ namespace CSharpWars.Web
     {
         public static void Main(string[] args)
         {
-            var certificateFileName = Environment.GetEnvironmentVariable("CERTIFICATE_FILENAME");
-            var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
-            CreateHostBuilder(args, certificateFileName, certificatePassword).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args, string certificateFileName, string certificatePassword) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostContext, configurationBuilder) =>
                 {
+                    var keyVault = GetEnvironmentVariable("KEY_VAULT");
+                    var clientId = GetEnvironmentVariable("CLIENT_ID");
+                    var clientSecret = GetEnvironmentVariable("CLIENT_SECRET");
+                    configurationBuilder.AddAzureKeyVault(keyVault, clientId, clientSecret);
                     configurationBuilder.AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -26,15 +28,7 @@ namespace CSharpWars.Web
                     webBuilder.UseKestrel();
                     webBuilder.ConfigureKestrel((hostContext, options) =>
                     {
-                        if (string.IsNullOrEmpty(certificateFileName) || string.IsNullOrEmpty(certificatePassword))
-                        {
-                            options.Listen(IPAddress.Any, 5000);
-                        }
-                        else
-                        {
-                            options.Listen(IPAddress.Any, 5000,
-                                listenOptions => { listenOptions.UseHttps(certificateFileName, certificatePassword); });
-                        }
+                        options.Listen(IPAddress.Any, 5000);
                     });
                     webBuilder.UseStartup<Startup>();
                 });

@@ -13,18 +13,18 @@ namespace CSharpWars.Web.Api
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigurationHelper(c =>
             {
-                c.ConnectionString = GetEnvironmentVariable("CONNECTION_STRING");
+                c.ConnectionString = _configuration.GetValue<string>("CONNECTIONSTRING");
                 c.ArenaSize = ToInt32(GetEnvironmentVariable("ARENA_SIZE"));
                 c.ValidationHost = GetEnvironmentVariable("VALIDATION_HOST");
                 c.BotDeploymentLimit = ToInt32(GetEnvironmentVariable("BOT_DEPLOYMENT_LIMIT"));
@@ -40,6 +40,7 @@ namespace CSharpWars.Web.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UsePathBase("/api");
             app.UseRouting();
             app.UseHttpMetrics();
             app.UseAuthorization();
