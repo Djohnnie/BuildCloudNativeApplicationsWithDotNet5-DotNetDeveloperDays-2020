@@ -1,0 +1,6 @@
+name: MijnSauna
+services:
+- name: mijnsauna-api
+  project: MijnSauna.Backend.Api/MijnSauna.Backend.Api.csproj
+- name: mijnsauna-processor
+  project: MijnSauna.Middleware.Processor/MijnSauna.Middleware.Processor.csproj

@@ -27,7 +27,15 @@ namespace CSharpWars.Web
             {
                 c.ConnectionString = _configuration.GetValue<string>("CONNECTIONSTRING");
                 c.ArenaSize = ToInt32(GetEnvironmentVariable("ARENA_SIZE"));
-                c.ValidationHost = GetEnvironmentVariable("VALIDATION_HOST");
+                if (string.IsNullOrEmpty(GetEnvironmentVariable("TYE")))
+                {
+                    c.ValidationHost = GetEnvironmentVariable("VALIDATION_HOST");
+                }
+                else
+                {
+                    var uri = _configuration.GetServiceUri("cshwarpwars-validator");
+                    c.ValidationHost = $"{uri}";
+                }
                 c.PointsLimit = ToInt32(GetEnvironmentVariable("POINTS_LIMIT"));
                 c.BotDeploymentLimit = ToInt32(GetEnvironmentVariable("BOT_DEPLOYMENT_LIMIT"));
             });

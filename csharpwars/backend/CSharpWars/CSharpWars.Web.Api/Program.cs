@@ -26,10 +26,15 @@ namespace CSharpWars.Web.Api
                         configurationBuilder.AddEnvironmentVariables();
                     });
                     webBuilder.UseKestrel();
-                    webBuilder.ConfigureKestrel((context, options) =>
+
+                    if (string.IsNullOrEmpty(GetEnvironmentVariable("TYE")))
                     {
-                        options.Listen(IPAddress.Any, 5000);
-                    });
+                        webBuilder.ConfigureKestrel((context, options) =>
+                        {
+                            options.Listen(IPAddress.Any, 5000);
+                        });
+                    }
+
                     webBuilder.UseStartup<Startup>();
                 });
     }

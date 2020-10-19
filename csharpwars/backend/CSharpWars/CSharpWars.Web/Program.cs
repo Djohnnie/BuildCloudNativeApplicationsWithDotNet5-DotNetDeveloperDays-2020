@@ -26,10 +26,15 @@ namespace CSharpWars.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseKestrel();
-                    webBuilder.ConfigureKestrel((hostContext, options) =>
+
+                    if (string.IsNullOrEmpty(GetEnvironmentVariable("TYE")))
                     {
-                        options.Listen(IPAddress.Any, 5000);
-                    });
+                        webBuilder.ConfigureKestrel((hostContext, options) =>
+                        {
+                            options.Listen(IPAddress.Any, 5000);
+                        });
+                    }
+
                     webBuilder.UseStartup<Startup>();
                 });
     }

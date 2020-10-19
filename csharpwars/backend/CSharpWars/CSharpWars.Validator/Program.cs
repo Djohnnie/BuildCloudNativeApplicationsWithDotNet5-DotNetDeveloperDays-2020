@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
+using static System.Environment;
 
 namespace CSharpWars.Validator
 {
@@ -17,10 +18,13 @@ namespace CSharpWars.Validator
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseKestrel();
-                    webBuilder.ConfigureKestrel((context, options) =>
+                    if (string.IsNullOrEmpty(GetEnvironmentVariable("TYE")))
                     {
-                        options.Listen(IPAddress.Any, 5000, configure => configure.Protocols = HttpProtocols.Http2);
-                    });
+                        webBuilder.ConfigureKestrel((context, options) =>
+                        {
+                            options.Listen(IPAddress.Any, 5000, configure => configure.Protocols = HttpProtocols.Http2);
+                        });
+                    }
                     webBuilder.UseStartup<Startup>();
                 });
     }
